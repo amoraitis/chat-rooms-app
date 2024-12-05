@@ -1,10 +1,15 @@
-﻿namespace ChatRooms.Api.Models
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+
+namespace ChatRooms.Api.Models
 {
     public class Room
     {
-        public string Id { get; set; } // MongoDB's BSON Id
-        public DateTime Timestamp { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; } 
+        public DateTime? Timestamp { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 }

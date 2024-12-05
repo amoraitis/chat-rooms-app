@@ -55,7 +55,7 @@ namespace ChatRooms.Api
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors(s => s.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             app.UseAuthorization();
 
 

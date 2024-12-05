@@ -1,3 +1,4 @@
+using System.Net;
 using ChatRooms.Api.Models;
 using ChatRooms.Api.Services;
 
@@ -6,7 +7,7 @@ namespace ChatRooms.Api.Controllers
 
     using Microsoft.AspNetCore.Mvc;
 
-    [Route("api/")]
+    [Route("api/rooms")]
     [ApiController]
     public class ChatsController : ControllerBase
     {
@@ -18,7 +19,7 @@ namespace ChatRooms.Api.Controllers
             _roomService = roomService;
             _chatService = chatService;
         }
-        [HttpGet("rooms")]
+        [HttpGet]
         public async Task<IActionResult> GetRooms()
         {
             var rooms = await _roomService.GetRoomsAsync();
@@ -26,7 +27,7 @@ namespace ChatRooms.Api.Controllers
             return Ok(rooms);
         }
 
-        [HttpGet("room/{id}/history")]
+        [HttpGet("{id}/history")]
         public async Task<ActionResult<string>> GetRoomHistoryBy(string id)
         {
             var messages = await _chatService.GetMessagesAsync(id);
@@ -34,12 +35,25 @@ namespace ChatRooms.Api.Controllers
             return Ok(messages);
         }
 
-        [HttpPost("room")]
+        [HttpPost]
         public async Task<IActionResult> CreateRoom([FromBody] Room room)
         {
-            await _roomService.CreateRoomAsync(room);
+            var insertedRoom = await _roomService.CreateRoomAsync(room);
 
-            return Ok();
+            return Ok(insertedRoom);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRoom(string id)
+        {
+            var deleted = await _roomService.DeleteRoomAsync(id);
+
+            if (deleted == false)
+            {
+                return this.NotFound();
+            }
+
+            return this.NoContent();
         }
     }
 }
