@@ -1,22 +1,25 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import RoomList from "@/app/components/RoomList";
 import { apiService } from "@/services/apiService";
 
-interface Room {
-  id: string;
-  name: string;
-}
-
 const HomePage = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [newRoomName, setNewRoomName] = useState("");
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
+    // Load username from localStorage on mount
+    const storedUsername = localStorage.getItem("chat-username");
+    if (storedUsername) {
+      setUsername(storedUsername);
+    }
+
+    // Fetch rooms
     const fetchRooms = async () => {
       try {
         const rooms = await apiService.getRooms();
@@ -32,6 +35,13 @@ const HomePage = () => {
   }, []);
 
   const handleJoinRoom = (roomId: string) => {
+    if (!username.trim()) {
+      alert("Please enter your username before joining a room.");
+      return;
+    }
+
+    // Store the username in localStorage
+    localStorage.setItem("chat-username", username);
     router.push(`/room/${roomId}`);
   };
 
@@ -78,6 +88,18 @@ const HomePage = () => {
       <div className="container mx-auto p-6">
         <h1 className="text-4xl font-bold text-center text-blue-600">Available Chat Rooms</h1>
 
+        {/* Username Input */}
+        <div className="mt-6 flex flex-col items-center">
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter your username"
+            className="w-full max-w-md p-2 border border-gray-300 rounded-md"
+          />
+        </div>
+
+        {/* Room Creation Section */}
         <div className="mt-6 flex flex-col items-center">
           <input
             type="text"
@@ -94,6 +116,7 @@ const HomePage = () => {
           </button>
         </div>
 
+        {/* Room List */}
         <RoomList
           rooms={rooms}
           onJoinRoom={handleJoinRoom}

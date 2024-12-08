@@ -1,10 +1,5 @@
 import React from "react";
 
-interface Room {
-  id: string;
-  name: string;
-}
-
 interface RoomListProps {
   rooms: Room[];
   onJoinRoom: (roomId: string) => void;
