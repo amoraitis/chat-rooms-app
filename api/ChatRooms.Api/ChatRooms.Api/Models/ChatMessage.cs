@@ -7,10 +7,10 @@ namespace ChatRooms.Api.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public string RoomId { get; set; }
         public string SenderName { get; set; }
         public string Message { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime? Timestamp { get; set; }
     }
 }

@@ -1,12 +1,10 @@
 using System.Net;
 using ChatRooms.Api.Models;
 using ChatRooms.Api.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChatRooms.Api.Controllers
 {
-
-    using Microsoft.AspNetCore.Mvc;
-
     [Route("api/rooms")]
     [ApiController]
     public class ChatsController : ControllerBase
@@ -19,6 +17,7 @@ namespace ChatRooms.Api.Controllers
             _roomService = roomService;
             _chatService = chatService;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetRooms()
         {
@@ -27,8 +26,8 @@ namespace ChatRooms.Api.Controllers
             return Ok(rooms);
         }
 
-        [HttpGet("{id}/history")]
-        public async Task<ActionResult<string>> GetRoomHistoryBy(string id)
+        [HttpGet(@"{id}/history")]
+        public async Task<IActionResult> GetRoomHistoryBy(string id)
         {
             var messages = await _chatService.GetMessagesAsync(id);
 
@@ -38,6 +37,7 @@ namespace ChatRooms.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRoom([FromBody] Room room)
         {
+            room.Timestamp = DateTime.UtcNow;
             var insertedRoom = await _roomService.CreateRoomAsync(room);
 
             return Ok(insertedRoom);

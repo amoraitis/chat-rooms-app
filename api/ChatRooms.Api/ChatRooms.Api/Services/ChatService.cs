@@ -13,7 +13,7 @@ namespace ChatRooms.Api.Services
         /// </summary>
         /// <param name="message">The message.</param>
         /// <returns>The Task</returns>
-        Task SaveMessageAsync(ChatMessage message);
+        Task<ChatMessage> SaveMessageAsync(ChatMessage message);
 
         /// <summary>
         /// Get the messages by room Id.
@@ -34,9 +34,11 @@ namespace ChatRooms.Api.Services
         }
 
         /// <inheritdoc />
-        public async Task SaveMessageAsync(ChatMessage message)
+        public async Task<ChatMessage> SaveMessageAsync(ChatMessage message)
         {
             await _messages.InsertOneAsync(message);
+
+            return message;
         }
 
         /// <inheritdoc />

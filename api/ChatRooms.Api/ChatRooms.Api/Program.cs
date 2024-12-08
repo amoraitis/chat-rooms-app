@@ -33,7 +33,7 @@ namespace ChatRooms.Api
 
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
-
+            builder.Services.AddSignalR();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -46,6 +46,8 @@ namespace ChatRooms.Api
                 var database = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
                 MongoDbInitializer.Initialize(database);
             }
+
+            app.MapHub<ChatHub>("/chat");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
