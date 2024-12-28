@@ -1,6 +1,6 @@
 interface Room {
-  id: string;
-  name: string;
+  id: string | undefined;
+  name: string | undefined;
 }
 
 interface ChatMessage {
@@ -8,4 +8,9 @@ interface ChatMessage {
   senderName: string;
   message: string;
   timestamp: string;
+}
+
+interface RoomHistoryResponse {
+  messages: ChatMessage[];
+  room: Room
 }

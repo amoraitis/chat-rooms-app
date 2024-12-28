@@ -24,7 +24,7 @@ const HomePage = () => {
       try {
         const rooms = await apiService.getRooms();
         setRooms(rooms);
-      } catch (err) {
+      } catch (err: any) {
         setError(err.message || "An unexpected error occurred.");
       } finally {
         setLoading(false);
@@ -53,9 +53,12 @@ const HomePage = () => {
 
     try {
       const newRoom = await apiService.createRoom(newRoomName);
+      
       setRooms((prevRooms) => [...prevRooms, newRoom]);
-      setNewRoomName(""); // Clear the input field
-    } catch (err) {
+      
+      // Clear the input field
+      setNewRoomName("");
+    } catch (err: any) {
       alert(err.message || "An unexpected error occurred.");
     }
   };
@@ -66,7 +69,7 @@ const HomePage = () => {
     try {
       await apiService.deleteRoom(roomId);
       setRooms((prevRooms) => prevRooms.filter((room) => room.id !== roomId));
-    } catch (err) {
+    } catch (err: any) {
       alert(err.message || "An unexpected error occurred.");
     }
   };
@@ -84,9 +87,10 @@ const HomePage = () => {
   }
 
   return (
+
     <main className="min-h-screen bg-gray-100">
       <div className="container mx-auto p-6">
-        <h1 className="text-4xl font-bold text-center text-blue-600">Available Chat Rooms</h1>
+        <h1 className="text-4xl font-bold text-center text-purple-600">Available Chat Rooms</h1>
 
         {/* Username Input */}
         <div className="mt-6 flex flex-col items-center">
@@ -95,7 +99,7 @@ const HomePage = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter your username"
-            className="w-full max-w-md p-2 border border-gray-300 rounded-md"
+            className="w-full max-w-md p-2 border border-gray-300 rounded-md text-gray-500"
           />
         </div>
 
@@ -106,11 +110,11 @@ const HomePage = () => {
             value={newRoomName}
             onChange={(e) => setNewRoomName(e.target.value)}
             placeholder="Enter new room name"
-            className="w-full max-w-md p-2 border border-gray-300 rounded-md"
+            className="w-full max-w-md p-2 border border-gray-300 rounded-md text-gray-500"
           />
           <button
             onClick={handleCreateRoom}
-            className="mt-3 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:ring focus:ring-blue-300"
+            className="mt-3 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-blue-600 focus:ring focus:ring-blue-300"
           >
             Create Room
           </button>

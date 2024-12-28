@@ -29,9 +29,16 @@ namespace ChatRooms.Api.Controllers
         [HttpGet(@"{id}/history")]
         public async Task<IActionResult> GetRoomHistoryBy(string id)
         {
-            var messages = await _chatService.GetMessagesAsync(id);
+            var messagesGetter = _chatService.GetMessagesAsync(id);
+            var roomGetter = _roomService.GetRoomByIdAsync(id);
 
-            return Ok(messages);
+            await Task.WhenAll(messagesGetter, roomGetter);
+
+            return Ok(new
+            {
+                Room = roomGetter.Result,
+                Messages = messagesGetter.Result
+            });
         }
 
         [HttpPost]

@@ -10,9 +10,11 @@ class SignalRService {
       .build();
   }
 
-  async start() {
-    if (this.connection.state === signalR.HubConnectionState.Connected) return;
+  isConnected() { 
+    return this.connection && signalRService.connection.state === "Connected";
+  }
 
+  async start() {
     try {
       await this.connection.start();
       console.log("SignalR connected.");
@@ -21,12 +23,16 @@ class SignalRService {
     }
   }
 
-  async sendMessage(roomId: string, senderName: string, message: string, timestamp: string) {
-    if (this.connection.state !== signalR.HubConnectionState.Connected) {
-      console.warn("SignalR connection is not in the 'Connected' state.");
-      return;
+  async stop() {
+    try {
+      await this.connection.stop();
+      console.log("SignalR disconnected.");
+    } catch (err) {
+      console.error("Error stopping SignalR connection:", err);
     }
+  }
 
+  async sendMessage(roomId: string, senderName: string, message: string, timestamp: string) {
     try {
       await this.connection.invoke("SendMessage", roomId, senderName, message, timestamp);
     } catch (err) {
@@ -38,27 +44,20 @@ class SignalRService {
     this.connection.on("ReceiveMessage", callback);
   }
 
+  offReceiveMessage(callback: (senderName: string, message: string, timestamp: string) => void){
+    signalRService.connection.off("ReceiveMessage", callback);
+  }
+
   async joinRoom(roomId: string) {
-    setTimeout(async () => {
-      if (this.connection.state !== signalR.HubConnectionState.Connected) {
-        console.warn("SignalR connection is not in the 'Connected' state.");
-        return;
-      }
   
       try {
         await this.connection.invoke("JoinRoom", roomId);
       } catch (err) {
         console.error("Error joining room:", err);
       }
-    }, 150);
   }
 
   async leaveRoom(roomId: string) {
-    if (this.connection.state !== signalR.HubConnectionState.Connected) {
-      console.warn("SignalR connection is not in the 'Connected' state.");
-      return;
-    }
-
     try {
       await this.connection.invoke("LeaveRoom", roomId);
     } catch (err) {

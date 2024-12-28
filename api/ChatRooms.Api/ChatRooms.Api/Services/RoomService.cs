@@ -23,6 +23,8 @@ namespace ChatRooms.Api.Services
         Task<Room> CreateRoomAsync(Room room);
 
         Task<bool> DeleteRoomAsync(string id);
+
+        Task<Room> GetRoomByIdAsync(string id);
     }
 
     /// <inheritdoc />
@@ -47,6 +49,12 @@ namespace ChatRooms.Api.Services
         {
             var result = await _rooms.DeleteOneAsync(room => room.Id != null && room.Id.Equals(id));
             return result.DeletedCount > 0;
+        }
+
+        public async Task<Room> GetRoomByIdAsync(string id)
+        {
+            var result = await _rooms.FindAsync(r => r.Id != null && r.Id.Equals(id));
+            return result.FirstOrDefault();
         }
 
         /// <inheritdoc />
